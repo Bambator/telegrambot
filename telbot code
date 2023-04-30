@@ -1,0 +1,25 @@
+```python
+import telegram
+from telegram.ext import Updater, MessageHandler, Filters
+
+TOKEN = "YOUR_TOKEN"
+
+def count_messages(bot, update):
+    chat_id = update.message.chat_id
+    user_id = update.message.from_user.id
+    user_name = update.message.from_user.first_name
+    # счетчик для каждого пользователя
+    user_count = db.get(user_id, 0)
+    user_count += 1
+    db[user_id] = user_count
+    bot.send_message(chat_id=chat_id,
+                     text=f"{user_name}, Вы написали {user_count} сообщений")
+
+if __name__ == '__main__':
+    db = {}  # словарь для хранения количества сообщений каждого участника
+    updater = Updater(TOKEN)
+    dp = updater.dispatcher
+    dp.add_handler(MessageHandler(Filters.text, count_messages))
+    updater.start_polling()
+    updater.idle()
+```
