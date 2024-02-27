@@ -1,0 +1,37 @@
+from openai import OpenAI
+
+# Инициализация клиента с ключом API и базовым URL
+client = OpenAI(
+    api_key="sk-ocZsDK2UM23MfVob1ncrgijjrEytVdeU",
+    base_url="https://api.proxyapi.ru/openai/v1",
+)
+
+# Функция для общения с нейросетью
+def chat_with_ai():
+    # История сообщений для текущей сессии чата
+    messages = []
+
+    print("Чтобы выйти, напишите 'выход'.")
+    while True:
+        # Получение ввода от пользователя
+        user_input = input("Вы: ")
+        if user_input.lower() == 'выход':
+            break
+
+        # Добавление пользовательского ввода в историю сообщений
+        messages.append({"role": "user", "content": user_input})
+
+        # Создание запроса к нейросети с текущей историей сообщений
+        chat_completion = client.chat.completions.create(
+            model="gpt-3.5-turbo-1106", messages=messages
+        )
+
+        # Получение и вывод ответа нейросети
+        ai_response = chat_completion.choices[0].message.content.strip()
+        print("AI:", ai_response)
+
+        # Добавление ответа нейросети в историю сообщений
+        messages.append({"role": "assistant", "content": ai_response})
+
+# Запуск функции общения с нейросетью
+chat_with_ai()
