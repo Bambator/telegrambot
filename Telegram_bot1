@@ -1,0 +1,51 @@
+import telebot
+
+TOKEN = '5165204777:AAHAgEh25dkzeAPngCEv04jp-qc3CL5ilfU'
+bot = telebot.TeleBot(TOKEN)
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.reply_to(message, "Привет! Я твой помощник. Используй команду /help, чтобы узнать, что я умею.")
+
+@bot.message_handler(commands=['help'])
+def send_help(message):
+    help_text = "Список команд: \n"
+    help_text += "/start - начать работу с ботом\n"
+    help_text += "/help - получить список команд\n"
+    help_text += "/perevorot - переворачивает текст сообщения\n"
+    help_text += "/caps - преобразует текст сообщения в заглавные буквы\n"
+    help_text += "/cute - удаляет гласные буквы в тексте\n"
+    help_text += "/change - меняет буквы текста обращения попеременно на заглавные и строчные"
+    bot.reply_to(message, help_text)
+
+@bot.message_handler(commands=['perevorot'])
+def reverse_text(message):
+    user_message = message.text.replace("/perevorot ", "", 1)
+    reversed_message = user_message[::-1]
+    bot.reply_to(message, reversed_message)
+
+@bot.message_handler(commands=['caps'])
+def text_to_uppercase(message):
+    user_message = message.text.replace("/caps ", "", 1)
+    uppercase_message = user_message.upper()
+    bot.reply_to(message, uppercase_message)
+
+@bot.message_handler(commands=['cute'])
+def remove_vowels(message):
+    user_message = message.text.replace("/cute ", "", 1)
+    vowels = "аеёиоуыэюяАЕЁИОУЫЭЮЯ"
+    result_text = ''.join([char for char in user_message if char not in vowels])
+    bot.reply_to(message, result_text)
+
+@bot.message_handler(commands=['change'])
+def alternate_case(message):
+    user_message = message.text.replace("/change ", "", 1)
+    new_message = ""
+    for i, char in enumerate(user_message):
+        if i % 2 == 0:
+            new_message += char.upper()
+        else:
+            new_message += char.lower()
+    bot.reply_to(message, new_message)
+
+bot.polling(none_stop=True)
